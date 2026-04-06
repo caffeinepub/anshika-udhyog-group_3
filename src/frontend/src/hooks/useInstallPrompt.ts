@@ -10,14 +10,34 @@ export function useInstallPrompt() {
     useState<BeforeInstallPromptEvent | null>(null);
   const [isInstalled, setIsInstalled] = useState(false);
   const [isInstallable, setIsInstallable] = useState(false);
+  const [isIOS, setIsIOS] = useState(false);
+  const [isIOSInstallable, setIsIOSInstallable] = useState(false);
 
   useEffect(() => {
-    // Check if already installed
-    if (window.matchMedia("(display-mode: standalone)").matches) {
+    // Detect iOS
+    const ua = navigator.userAgent;
+    const iosDevice =
+      /iPad|iPhone|iPod/.test(ua) &&
+      !(window as unknown as { MSStream?: unknown }).MSStream;
+    setIsIOS(iosDevice);
+
+    // Check if already installed (standalone mode)
+    const standalone =
+      window.matchMedia("(display-mode: standalone)").matches ||
+      (window.navigator as unknown as { standalone?: boolean }).standalone ===
+        true;
+
+    if (standalone) {
       setIsInstalled(true);
       return;
     }
 
+    // iOS: show manual install instructions
+    if (iosDevice && !standalone) {
+      setIsIOSInstallable(true);
+    }
+
+    // Android/Chrome: beforeinstallprompt
     const handler = (e: Event) => {
       e.preventDefault();
       setInstallPrompt(e as BeforeInstallPromptEvent);
@@ -45,5 +65,11 @@ export function useInstallPrompt() {
     }
   };
 
-  return { isInstallable, isInstalled, triggerInstall };
+  return {
+    isInstallable,
+    isInstalled,
+    isIOS,
+    isIOSInstallable,
+    triggerInstall,
+  };
 }
