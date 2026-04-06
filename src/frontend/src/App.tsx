@@ -7,6 +7,16 @@ import { UserDashboard } from "./components/dashboard/UserDashboard";
 import { Footer } from "./components/layout/Footer";
 import { Header } from "./components/layout/Header";
 import { SplashScreen } from "./components/layout/SplashScreen";
+import { EcommercePage } from "./components/pages/EcommercePage";
+import { FranchisePage } from "./components/pages/FranchisePage";
+import { InternshipPage } from "./components/pages/InternshipPage";
+import { JobsPage } from "./components/pages/JobsPage";
+import { MultiIncomePlanPage } from "./components/pages/MultiIncomePlanPage";
+import { PolicyPage } from "./components/pages/PolicyPage";
+import { ShippingPage } from "./components/pages/ShippingPage";
+import { ShoppingPage } from "./components/pages/ShoppingPage";
+import { UtilitiesPage } from "./components/pages/UtilitiesPage";
+import { VacancyPage } from "./components/pages/VacancyPage";
 import { InstallBanner } from "./components/pwa/InstallBanner";
 import { useAuth } from "./hooks/useAuth";
 import {
@@ -35,7 +45,17 @@ type Page =
   | "services"
   | "activities"
   | "events"
-  | "contact";
+  | "contact"
+  | "shopping"
+  | "utilities"
+  | "policy"
+  | "shipping"
+  | "internship"
+  | "vacancy"
+  | "income-plan"
+  | "franchise"
+  | "jobs"
+  | "ecommerce";
 
 export default function App() {
   const [showSplash, setShowSplash] = useState(true);
@@ -97,6 +117,7 @@ export default function App() {
       return;
     }
     setPage(newPage as Page);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleLogout = () => {
@@ -127,63 +148,54 @@ export default function App() {
   const showFooter =
     page !== "dashboard" && page !== "admin" && page !== "signup";
 
-  return (
-    <>
-      {/* Splash Screen - shows on every fresh page load */}
-      {showSplash && (
-        <SplashScreen
-          logoUrl={settings.logoUrl}
-          onComplete={handleSplashComplete}
-        />
-      )}
+  // Pages that don't require login
+  const publicPages: Page[] = [
+    "landing",
+    "signup",
+    "shopping",
+    "utilities",
+    "policy",
+    "shipping",
+    "internship",
+    "vacancy",
+    "income-plan",
+    "franchise",
+    "jobs",
+    "ecommerce",
+  ];
 
-      <div
-        className="min-h-screen flex flex-col"
-        style={{
-          opacity: showSplash ? 0 : 1,
-          transition: "opacity 0.5s ease",
-        }}
-      >
-        {showHeader && (
-          <Header
-            auth={auth}
+  const renderPage = () => {
+    switch (page) {
+      case "landing":
+        return (
+          <LandingPage
             settings={settings}
-            onLoginClick={() => setShowLogin(true)}
             onSignupClick={() => setPage("signup")}
-            onLogout={handleLogout}
-            onNavigate={handleNavigate}
-            currentPage={page}
-            notificationCount={myNotifications.length}
+            onSubmitInquiry={(data) =>
+              addInquiry({
+                ...data,
+                date: data.date || new Date().toISOString(),
+              })
+            }
           />
-        )}
+        );
 
-        <div className="flex-1">
-          {page === "landing" && (
-            <LandingPage
-              settings={settings}
-              onSignupClick={() => setPage("signup")}
-              onSubmitInquiry={(data) =>
-                addInquiry({
-                  ...data,
-                  date: data.date || new Date().toISOString(),
-                })
-              }
-            />
-          )}
+      case "signup":
+        return (
+          <SignupPage
+            settings={settings}
+            onBack={() => setPage("landing")}
+            onRegister={(data) => addMember(data)}
+            onLoginAfterRegister={() => {
+              setPage("landing");
+              setShowLogin(true);
+            }}
+          />
+        );
 
-          {page === "signup" && (
-            <SignupPage
-              settings={settings}
-              onBack={() => setPage("landing")}
-              onRegister={(data) => addMember(data)}
-              onLoginAfterRegister={() => {
-                setPage("landing");
-                setShowLogin(true);
-              }}
-            />
-          )}
-
-          {page === "dashboard" && currentMember && (
+      case "dashboard":
+        if (currentMember) {
+          return (
             <UserDashboard
               member={currentMember}
               payments={payments}
@@ -194,29 +206,31 @@ export default function App() {
               onAddInternship={addInternship}
               onLogout={handleLogout}
             />
-          )}
-
-          {page === "dashboard" &&
-            !currentMember &&
-            auth.isLoggedIn &&
-            auth.role === "user" && (
-              <div className="min-h-screen pt-32 flex items-center justify-center">
-                <div className="text-center">
-                  <div className="text-gray-500">
-                    Member data not found. Please contact admin.
-                  </div>
-                  <button
-                    type="button"
-                    onClick={handleLogout}
-                    className="mt-4 text-green-700 underline"
-                  >
-                    Logout
-                  </button>
+          );
+        }
+        if (auth.isLoggedIn && auth.role === "user") {
+          return (
+            <div className="min-h-screen pt-32 flex items-center justify-center">
+              <div className="text-center">
+                <div className="text-gray-500">
+                  Member data not found. Please contact admin.
                 </div>
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="mt-4 text-green-700 underline"
+                >
+                  Logout
+                </button>
               </div>
-            )}
+            </div>
+          );
+        }
+        return null;
 
-          {page === "admin" && auth.role === "admin" && (
+      case "admin":
+        if (auth.role === "admin") {
+          return (
             <AdminDashboard
               members={members}
               activities={activities}
@@ -257,9 +271,44 @@ export default function App() {
               onUpdateSettings={setSettings}
               onLogout={handleLogout}
             />
-          )}
+          );
+        }
+        return null;
 
-          {!auth.isLoggedIn && page !== "landing" && page !== "signup" && (
+      case "shopping":
+        return <ShoppingPage />;
+
+      case "ecommerce":
+        return <EcommercePage />;
+
+      case "utilities":
+        return <UtilitiesPage />;
+
+      case "policy":
+        return <PolicyPage />;
+
+      case "shipping":
+        return <ShippingPage />;
+
+      case "internship":
+        return <InternshipPage />;
+
+      case "vacancy":
+        return <VacancyPage />;
+
+      case "income-plan":
+        return <MultiIncomePlanPage onJoinClick={() => setPage("signup")} />;
+
+      case "franchise":
+        return <FranchisePage onJoinClick={() => setPage("signup")} />;
+
+      case "jobs":
+        return <JobsPage />;
+
+      default:
+        // Protected pages fallback
+        if (!auth.isLoggedIn && !publicPages.includes(page)) {
+          return (
             <div className="min-h-screen pt-32 flex items-center justify-center bg-green-50">
               <div className="text-center bg-white rounded-2xl p-8 shadow-lg border border-green-100 max-w-sm mx-4">
                 <div className="text-5xl mb-4">🔒</div>
@@ -279,8 +328,43 @@ export default function App() {
                 </button>
               </div>
             </div>
-          )}
-        </div>
+          );
+        }
+        return null;
+    }
+  };
+
+  return (
+    <>
+      {/* Splash Screen */}
+      {showSplash && (
+        <SplashScreen
+          logoUrl={settings.logoUrl}
+          onComplete={handleSplashComplete}
+        />
+      )}
+
+      <div
+        className="min-h-screen flex flex-col"
+        style={{
+          opacity: showSplash ? 0 : 1,
+          transition: "opacity 0.5s ease",
+        }}
+      >
+        {showHeader && (
+          <Header
+            auth={auth}
+            settings={settings}
+            onLoginClick={() => setShowLogin(true)}
+            onSignupClick={() => setPage("signup")}
+            onLogout={handleLogout}
+            onNavigate={handleNavigate}
+            currentPage={page}
+            notificationCount={myNotifications.length}
+          />
+        )}
+
+        <div className="flex-1">{renderPage()}</div>
 
         {showFooter && (
           <Footer settings={settings} onNavigate={handleNavigate} />

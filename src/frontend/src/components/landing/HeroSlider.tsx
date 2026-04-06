@@ -56,7 +56,14 @@ export function HeroSlider({ onCTAClick }: HeroSliderProps) {
   }, [next]);
 
   return (
-    <section className="relative h-[500px] md:h-[600px] overflow-hidden">
+    <section
+      className="relative w-full overflow-hidden"
+      style={{
+        height: "min(500px, 70vw)",
+        minHeight: "280px",
+        maxHeight: "580px",
+      }}
+    >
       <AnimatePresence initial={false} custom={direction}>
         <motion.div
           key={current}
@@ -73,28 +80,34 @@ export function HeroSlider({ onCTAClick }: HeroSliderProps) {
             className="w-full h-full object-cover"
           />
           {/* Overlay */}
-          <div className="absolute inset-0 gradient-hero flex items-center justify-center">
-            <div className="text-center text-white px-4 max-w-4xl">
+          <div
+            className="absolute inset-0 flex items-center justify-center"
+            style={{
+              background:
+                "linear-gradient(135deg, rgba(22,101,52,0.85) 0%, rgba(20,83,45,0.7) 100%)",
+            }}
+          >
+            <div className="text-center text-white px-4 w-full max-w-3xl mx-auto">
               <motion.div
                 initial={{ y: 30, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.2, duration: 0.5 }}
               >
-                <span className="inline-block bg-green-500 bg-opacity-80 text-white text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider mb-3">
+                <span className="inline-block bg-green-500 bg-opacity-80 text-white text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider mb-2 md:mb-3">
                   {slides[current].subtitle}
                 </span>
-                <h1 className="text-3xl md:text-5xl font-bold mb-4 leading-tight">
+                <h1 className="text-xl sm:text-3xl md:text-5xl font-bold mb-2 md:mb-4 leading-tight px-2">
                   {slides[current].title}
                 </h1>
-                <p className="text-base md:text-lg text-green-100 mb-8 max-w-2xl mx-auto">
+                <p className="text-xs sm:text-sm md:text-lg text-green-100 mb-4 md:mb-8 max-w-2xl mx-auto px-2 hidden sm:block">
                   {slides[current].description}
                 </p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 justify-center px-4">
                   <button
                     type="button"
                     onClick={onCTAClick}
                     data-ocid="hero.primary_button"
-                    className="bg-white text-green-800 hover:bg-green-50 font-semibold px-8 py-3 rounded-lg transition-all duration-200 shadow-lg"
+                    className="bg-white text-green-800 hover:bg-green-50 font-semibold px-5 sm:px-8 py-2.5 sm:py-3 rounded-lg transition-all duration-200 shadow-lg text-sm sm:text-base"
                   >
                     {slides[current].cta}
                   </button>
@@ -102,7 +115,7 @@ export function HeroSlider({ onCTAClick }: HeroSliderProps) {
                     type="button"
                     onClick={onCTAClick}
                     data-ocid="hero.secondary_button"
-                    className="border-2 border-white text-white hover:bg-white hover:bg-opacity-20 font-semibold px-8 py-3 rounded-lg transition-all duration-200"
+                    className="border-2 border-white text-white hover:bg-white hover:bg-opacity-20 font-semibold px-5 sm:px-8 py-2.5 sm:py-3 rounded-lg transition-all duration-200 text-sm sm:text-base"
                   >
                     Become a Member
                   </button>
@@ -118,21 +131,21 @@ export function HeroSlider({ onCTAClick }: HeroSliderProps) {
         type="button"
         onClick={prev}
         data-ocid="hero.slider.prev"
-        className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black bg-opacity-30 hover:bg-opacity-50 rounded-full flex items-center justify-center text-white transition-all z-10"
+        className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-10 sm:h-10 bg-black bg-opacity-30 hover:bg-opacity-50 rounded-full flex items-center justify-center text-white transition-all z-10"
       >
-        <ChevronLeft className="w-6 h-6" />
+        <ChevronLeft className="w-4 h-4 sm:w-6 sm:h-6" />
       </button>
       <button
         type="button"
         onClick={next}
         data-ocid="hero.slider.next"
-        className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black bg-opacity-30 hover:bg-opacity-50 rounded-full flex items-center justify-center text-white transition-all z-10"
+        className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-10 sm:h-10 bg-black bg-opacity-30 hover:bg-opacity-50 rounded-full flex items-center justify-center text-white transition-all z-10"
       >
-        <ChevronRight className="w-6 h-6" />
+        <ChevronRight className="w-4 h-4 sm:w-6 sm:h-6" />
       </button>
 
       {/* Dots */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2 z-10">
         {slides.map((slide, i) => (
           <button
             type="button"
@@ -141,8 +154,8 @@ export function HeroSlider({ onCTAClick }: HeroSliderProps) {
               setDirection(i > current ? 1 : -1);
               setCurrent(i);
             }}
-            className={`w-3 h-3 rounded-full transition-all ${
-              i === current ? "bg-white w-8" : "bg-white bg-opacity-50"
+            className={`h-2 rounded-full transition-all ${
+              i === current ? "bg-white w-6" : "bg-white bg-opacity-50 w-2"
             }`}
           />
         ))}

@@ -75,13 +75,26 @@ export function Header({
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const navLinks = [
-    { label: "🏠 Home", page: "landing", emoji: "🏠" },
-    { label: "ℹ️ About", page: "about", emoji: "ℹ️" },
-    { label: "🛠️ Services", page: "services", emoji: "🛠️" },
-    { label: "📸 Activities", page: "activities", emoji: "📸" },
-    { label: "📅 Events", page: "events", emoji: "📅" },
-    { label: "📞 Contact", page: "contact", emoji: "📞" },
+  const mainNavLinks = [
+    { label: "🏠 Home", page: "landing" },
+    { label: "ℹ️ About", page: "about" },
+    { label: "🛠️ Services", page: "services" },
+    { label: "📸 Activities", page: "activities" },
+    { label: "📅 Events", page: "events" },
+    { label: "📞 Contact", page: "contact" },
+  ];
+
+  const servicesLinks = [
+    { label: "🛍️ Shopping", page: "shopping" },
+    { label: "📦 E-Commerce", page: "ecommerce" },
+    { label: "⚡ Utilities", page: "utilities" },
+    { label: "🚚 Shipping", page: "shipping" },
+    { label: "🎓 Internship", page: "internship" },
+    { label: "💼 Vacancies", page: "vacancy" },
+    { label: "💰 Income Plan", page: "income-plan" },
+    { label: "🏢 Franchise", page: "franchise" },
+    { label: "💼 Jobs", page: "jobs" },
+    { label: "📜 Policy", page: "policy" },
   ];
 
   const desktopNavLinks = [
@@ -273,8 +286,11 @@ export function Header({
 
       {/* Mobile Menu - Category wise */}
       {isMobileMenuOpen && (
-        <nav className="lg:hidden" style={{ backgroundColor: "#14532d" }}>
-          {/* ── MAIN MENU ──────────────── */}
+        <nav
+          className="lg:hidden overflow-y-auto max-h-screen"
+          style={{ backgroundColor: "#14532d" }}
+        >
+          {/* ── MAIN MENU ────────────── */}
           <div className="px-4 pt-3 pb-1">
             <div className="text-[10px] uppercase tracking-widest font-bold text-green-500 mb-1 flex items-center gap-2">
               <span className="flex-1 h-px bg-green-700" />
@@ -282,7 +298,7 @@ export function Header({
               <span className="flex-1 h-px bg-green-700" />
             </div>
           </div>
-          {navLinks.map((link) => (
+          {mainNavLinks.map((link) => (
             <button
               type="button"
               key={link.page}
@@ -297,7 +313,30 @@ export function Header({
             </button>
           ))}
 
-          {/* ── MEMBER AREA ──────────────── */}
+          {/* ── SERVICES & MORE ────────────── */}
+          <div className="px-4 pt-3 pb-1">
+            <div className="text-[10px] uppercase tracking-widest font-bold text-green-500 mb-1 flex items-center gap-2">
+              <span className="flex-1 h-px bg-green-700" />
+              Services &amp; More
+              <span className="flex-1 h-px bg-green-700" />
+            </div>
+          </div>
+          {servicesLinks.map((link) => (
+            <button
+              type="button"
+              key={link.page}
+              onClick={() => {
+                onNavigate(link.page);
+                setIsMobileMenuOpen(false);
+              }}
+              data-ocid={`nav.mobile.${link.page}.link`}
+              className="block w-full text-left px-6 py-3 text-green-100 hover:bg-green-800 hover:text-white border-b border-green-800 text-sm font-medium transition-colors"
+            >
+              {link.label}
+            </button>
+          ))}
+
+          {/* ── MEMBER AREA ────────────── */}
           <div className="px-4 pt-3 pb-1">
             <div className="text-[10px] uppercase tracking-widest font-bold text-green-500 mb-1 flex items-center gap-2">
               <span className="flex-1 h-px bg-green-700" />
@@ -357,7 +396,7 @@ export function Header({
             </>
           )}
 
-          {/* ── APP ──────────────── */}
+          {/* ── APP ────────────── */}
           <div className="px-4 pt-3 pb-1">
             <div className="text-[10px] uppercase tracking-widest font-bold text-green-500 mb-1 flex items-center gap-2">
               <span className="flex-1 h-px bg-green-700" />
@@ -387,7 +426,7 @@ export function Header({
             </div>
           )}
           {/* Bottom padding */}
-          <div className="h-3" />
+          <div className="h-4" />
         </nav>
       )}
     </header>

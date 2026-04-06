@@ -18,7 +18,7 @@ export function LandingPage({
   onSubmitInquiry,
 }: LandingPageProps) {
   return (
-    <main className="pt-20">
+    <main className="w-full max-w-full overflow-x-hidden pt-16 md:pt-20">
       <HeroSlider onCTAClick={onSignupClick} />
       <AboutSection />
       <FeaturesSection />

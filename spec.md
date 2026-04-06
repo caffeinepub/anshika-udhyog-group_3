@@ -1,59 +1,46 @@
-# Anshika Udhyog Group — Comprehensive Dashboard Upgrade
+# Anshika Udhyog Group
 
 ## Current State
-- SignupPage: collects name, email, phone, address, city, pincode, membership plan. No KYC document upload.
-- UserDashboard: 10 sections (overview, profile, membership, idcard, certificates, payments, internship, kyc, bank, notifications). No step-gated flow — dashboard opens directly after login.
-- AdminDashboard: 19 sections. Access Code Management exists. No member profile view in access code section. No forward letter option.
-- Types: LocalMember has basic fields. No KYC document fields, no team/upline/downline, no letters/work orders, no salary/attendance/reports.
+A comprehensive React + Motoko web app for ANSHIKA UDHYOG GROUP NGO/Business platform with:
+- Landing page with hero slider, about, services, activities, events, contact
+- Admin Dashboard with 18 sections, mobile horizontal scroll tabs
+- User Dashboard with KYC/payment gating
+- ID Card Designer (12 designs, PVC card)
+- Official Letter Generator (12 designs)
+- Signup page with basic details
+- Footer with saffron/orange background, WhatsApp button
+- PWA install support
+- Hamburger menu with category-wise links
 
 ## Requested Changes (Diff)
 
 ### Add
-- **Signup KYC Step**: Aadhaar photo upload, PAN photo upload, photo upload, father's name, DOB, gender fields on signup form
-- **Login Step-Gate Flow**: After login, check kycStatus. If pending → show KYC upload page first. After KYC submitted, show Payment Details page (screenshot upload + UTR number). Only after payment verified → open full dashboard
-- **Blue Verification Tick**: Show on profile photo and name when kycStatus === 'approved'
-- **Designation-based Access**: Different badge colors/icons per designation level
-- **User Dashboard New Sections**:
-  - Multiple Income Plan (with animated cards, roadmap)
-  - Utilities Service page
-  - Shopping Service page
-  - Meeting Page (submit meeting report)
-  - Training Page
-  - Upline & Down Team (tree view)
-  - Letters (from admin forward letters + joining letter)
-  - Work Orders
-  - Monthly Report submit
-  - Salary Card / Slip show
-  - Attendance Submit (camera face capture + location)
-  - Promotion Card display
-  - SHG Login/Story page
-- **Public Pages with Login Gate**: ERP, CRM, E-Commerce, Utilities, Shipping, Training, Internship, T&C, Policy, Branches, Attendance pages — all require login before showing content
-- **Admin: Access Code Change**: In AccessCodeManagement, add profile view modal for each member + change access code button
-- **Admin: Forward Letter**: In OfficialLetterGenerator, add forward-to-member option
-- **Admin: Income Plan Full Page**: Roadmap, blueprint, slideshow with auto-play animation, photo/video embed
-- **Admin: SHG Management**: SHG login, SHG story sections
-- **Admin: New Sections**: Helping Hands, Complaint Management, Emergency Help, Production Plan, Transport Service Roadmap, Shopping Service Roadmap, Product Layout/Benefits/Feedback
-- **Types Update**: Add kycDocAadhaar, kycDocPan, kycDocPhoto, fatherName, dob, gender, uplineId, paymentScreenshot, paymentUTR, paymentVerified fields to LocalMember
-- **Letter types**: AdminLetter interface (id, title, content, forwardedTo[], date, type)
-- **WorkOrder interface**, **AttendanceRecord interface**, **SalaryRecord interface**, **MeetingReport interface**, **MonthlyReport interface**
+- **ID Card**: Profile photo on LEFT side; name/address/designation/ID number font size bigger; seal+signature size bigger and better positioned
+- **Letter/Certificate**: Seal+signature upload option on letter/certificate; PDF download button after issue; real professional format
+- **Signup Page**: KYC documents upload fields (Aadhaar front/back, PAN card, photo, address proof)
+- **New Pages**: Shopping, Utilities, Policy, Shipping, Internship, Vacancy, Multi-Income Plan (with roadmap, blueprint, photo, video, loop animation), Franchise, Job listings, Job Description page, Job Offer popup, Ads banner, E-commerce (product catalog, cart, orders)
+- **Admin Dashboard**: Management sections for all new pages (edit, delete, update, upload, animations); Access Code change option for each member; full profile edit/update/upload/approve/reject
+- **PWA Icon**: New round AUG logo as PWA/APK install icon (192x192 and 512x512)
+- **Mobile Landing Page**: Fix overflow/horizontal scroll issues on mobile; ensure hero fits properly
 
 ### Modify
-- **SignupPage**: Add KYC document section with file upload fields (Aadhaar, PAN, photo, father's name, DOB, gender)
-- **UserDashboard**: Add step-gated login flow. Expand nav with all new sections. Add designation badge + verification tick in header.
-- **AdminDashboard**: Add profile view in access code section. Add forward letter option in letter generator. Add new sections for SHG, Helping Hands, Complaints, Emergency, Production, Roadmaps.
-- **App.tsx**: Add public pages (ERP, CRM, etc.) with login-required gate
-- **types/index.ts**: Extend LocalMember, add new interfaces
+- ID Card Designer: Left-side profile photo layout, larger text for all fields, bigger seal/signature
+- OfficialLetterGenerator: Add PDF download button, seal/signature upload integrated into generated letter real format
+- SignupPage: Add KYC document upload section
+- AdminDashboard: Add new module tabs, access code management per member
+- manifest.json: Update icons to new round AUG logo
+- App.tsx: Add routing for new pages (shopping, utilities, policy, shipping, internship, vacancy, income-plan, franchise, jobs, ecommerce)
 
 ### Remove
 - Nothing removed
 
 ## Implementation Plan
-1. Update `types/index.ts` — extend LocalMember, add AdminLetter, WorkOrder, AttendanceRecord, SalaryRecord, MeetingReport, MonthlyReport interfaces
-2. Update `SignupPage.tsx` — add KYC documents section (Aadhaar upload, PAN upload, photo, father's name, DOB, gender)
-3. Update `UserDashboard.tsx` — add step-gated flow (KYC screen → Payment screen → main dashboard), new nav sections, designation badge, verification tick
-4. Create new dashboard section components: MultipleIncomePage, UtilitiesPage, ShoppingPage, MeetingPage, TrainingPage, TeamPage, LettersPage, WorkOrderPage, AttendancePage, SalaryCardPage, MonthlyReportPage
-5. Update `AdminDashboard.tsx` — add profile view in AccessCodeManagement, forward letter, new admin sections
-6. Create new admin section components: HelpingHandsManagement, ComplaintManagement, EmergencyHelpManagement, SHGManagement, ProductionPlanManagement, RoadmapManagement
-7. Add public pages with login gate in App.tsx: ERPPage, CRMPage, ECommercePage, ShippingPage, BranchesPage, T&CPage, PolicyPage
-8. Update hooks/useDataStore for new data types
-9. Validate + deploy
+1. Generate new round PWA icon (192x192 + 512x512), update manifest.json
+2. Fix ID Card Designer - left photo layout, bigger text, bigger seal/signature
+3. Enhance Letter Generator - PDF download, real letterhead format with seal on letter
+4. Update SignupPage - add KYC document upload fields
+5. Fix mobile landing page overflow/fit issues (especially hero section)
+6. Add new pages: Shopping, Utilities, Policy, Shipping, Internship, Vacancy, Multi-Income Plan, Franchise, Jobs, E-commerce
+7. Update AdminDashboard with new module management tabs + access code change per member + full member profile edit
+8. Update App.tsx with routes for new pages
+9. Validate and deploy

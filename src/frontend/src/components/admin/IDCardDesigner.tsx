@@ -212,14 +212,14 @@ function PVCCardFront({
   return (
     <div
       style={{
-        width: "85.6mm",
-        height: "54mm",
-        borderRadius: "6px",
+        width: "55mm",
+        minHeight: "90mm",
+        borderRadius: "8px",
         overflow: "hidden",
         fontFamily: "Arial, sans-serif",
         display: "flex",
         flexDirection: "column",
-        boxShadow: "0 4px 16px rgba(0,0,0,0.18)",
+        boxShadow: "0 4px 20px rgba(0,0,0,0.22)",
         background: design.bg,
         border: `2px solid ${design.primary}`,
         position: "relative",
@@ -362,11 +362,16 @@ function PVCCardFront({
             {member.name}
           </div>
           <div
-            style={{ fontSize: "6.5px", color: "#555", marginBottom: "3px" }}
+            style={{
+              fontSize: "9px",
+              color: "#555",
+              marginBottom: "4px",
+              fontWeight: "600",
+            }}
           >
             {(member as LocalMember).designation ?? "Member"}
           </div>
-          <div style={{ fontSize: "6px", color: "#333", lineHeight: 1.6 }}>
+          <div style={{ fontSize: "8px", color: "#333", lineHeight: 1.8 }}>
             <div>
               <strong>ID:</strong> {memberId}
             </div>
