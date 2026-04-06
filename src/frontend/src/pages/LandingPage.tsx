@@ -18,7 +18,10 @@ export function LandingPage({
   onSubmitInquiry,
 }: LandingPageProps) {
   return (
-    <main className="w-full max-w-full overflow-x-hidden pt-16 md:pt-20">
+    <main className="w-full max-w-full overflow-x-hidden">
+      {/* Spacer to push content below fixed header.
+          Mobile: header ~70px (no top bar), Desktop: header ~90px (top bar + main bar) */}
+      <div className="h-[70px] md:h-[90px]" aria-hidden="true" />
       <HeroSlider onCTAClick={onSignupClick} />
       <AboutSection />
       <FeaturesSection />
