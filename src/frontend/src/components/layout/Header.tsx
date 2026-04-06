@@ -113,7 +113,7 @@ export function Header({
       }`}
       style={{ backgroundColor: "#166534" }}
     >
-      {/* Top bar */}
+      {/* Top bar - desktop only */}
       <div
         className="hidden md:flex items-center justify-between px-6 py-1 text-xs text-green-100"
         style={{ backgroundColor: "#14532d" }}
@@ -150,28 +150,29 @@ export function Header({
         </div>
       </div>
 
-      {/* Main header */}
-      <div className="flex items-center justify-between px-4 md:px-6 py-3">
+      {/* Main header - compact on mobile */}
+      <div className="flex items-center justify-between px-3 md:px-6 py-2 md:py-3">
         {/* Logo + Title */}
         <button
           type="button"
-          className="flex items-center gap-3 group"
+          className="flex items-center gap-2 group"
           onClick={() => onNavigate("landing")}
           data-ocid="nav.home.link"
         >
+          {/* Mobile: smaller logo (h-8 = 32px), Desktop: normal (h-12 = 48px) */}
           <img
             src={effectiveLogo}
             alt="AUG Logo"
-            className="h-12 w-12 rounded-full object-cover border-2 border-green-300 bg-white"
+            className="h-8 w-8 md:h-12 md:w-12 rounded-full object-cover border-2 border-green-300 bg-white"
             onError={() => {
               if (!logoError) setLogoError(true);
             }}
           />
           <div className="text-left">
-            <div className="text-white font-bold text-sm md:text-base leading-tight tracking-wide">
+            <div className="text-white font-bold text-xs md:text-base leading-tight tracking-wide">
               {settings.siteName}
             </div>
-            <div className="text-green-200 text-xs leading-tight">
+            <div className="text-green-200 text-[10px] md:text-xs leading-tight hidden xs:block">
               {settings.tagline}
             </div>
           </div>
@@ -197,13 +198,13 @@ export function Header({
         </nav>
 
         {/* Auth Buttons */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 md:gap-2">
           {/* Mobile Install Button */}
           {isInstallable && !isInstalled && (
             <button
               type="button"
               onClick={triggerInstall}
-              className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold lg:hidden transition-all active:scale-95"
+              className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold lg:hidden transition-all active:scale-95"
               style={{
                 background: "rgba(255,255,255,0.15)",
                 color: "white",
@@ -211,8 +212,7 @@ export function Header({
               }}
               title="App Install Karo"
             >
-              <Download className="w-3.5 h-3.5" />
-              Install
+              <Download className="w-3 h-3" />
             </button>
           )}
 
@@ -220,7 +220,7 @@ export function Header({
             <>
               {notificationCount > 0 && (
                 <div className="relative">
-                  <Bell className="w-5 h-5 text-green-200" />
+                  <Bell className="w-4 h-4 md:w-5 md:h-5 text-green-200" />
                   <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
                     {notificationCount}
                   </span>
@@ -235,7 +235,7 @@ export function Header({
                   onNavigate(auth.role === "admin" ? "admin" : "dashboard")
                 }
                 data-ocid="nav.dashboard.link"
-                className="bg-green-600 hover:bg-green-500 text-white border-green-500"
+                className="bg-green-600 hover:bg-green-500 text-white border-green-500 text-xs px-2 py-1 h-7 md:h-9 md:text-sm md:px-4"
               >
                 Dashboard
               </Button>
@@ -244,9 +244,9 @@ export function Header({
                 variant="outline"
                 onClick={onLogout}
                 data-ocid="nav.logout.button"
-                className="border-green-300 text-green-100 hover:bg-green-700"
+                className="border-green-300 text-green-100 hover:bg-green-700 h-7 w-7 md:h-9 md:w-auto p-1 md:px-3"
               >
-                <LogOut className="w-4 h-4" />
+                <LogOut className="w-3.5 h-3.5 md:w-4 md:h-4" />
               </Button>
             </>
           ) : (
@@ -256,7 +256,7 @@ export function Header({
                 variant="outline"
                 onClick={onLoginClick}
                 data-ocid="nav.login.button"
-                className="border-green-300 text-green-100 hover:bg-green-700 bg-transparent"
+                className="border-green-300 text-green-100 hover:bg-green-700 bg-transparent text-xs px-2 py-1 h-7 md:h-9 md:text-sm md:px-4"
               >
                 Login
               </Button>
@@ -264,7 +264,7 @@ export function Header({
                 size="sm"
                 onClick={onSignupClick}
                 data-ocid="nav.signup.button"
-                className="bg-white text-green-800 hover:bg-green-50"
+                className="bg-white text-green-800 hover:bg-green-50 text-xs px-2 py-1 h-7 md:h-9 md:text-sm md:px-4"
               >
                 Register
               </Button>
@@ -274,7 +274,7 @@ export function Header({
           {/* Custom Hamburger */}
           <button
             type="button"
-            className="lg:hidden p-2 rounded hover:bg-green-700 transition-colors"
+            className="lg:hidden p-1.5 md:p-2 rounded hover:bg-green-700 transition-colors"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             data-ocid="nav.hamburger.toggle"
             aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}

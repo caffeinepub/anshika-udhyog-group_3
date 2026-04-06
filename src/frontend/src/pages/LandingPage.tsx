@@ -19,9 +19,12 @@ export function LandingPage({
 }: LandingPageProps) {
   return (
     <main className="w-full max-w-full overflow-x-hidden">
-      {/* Spacer to push content below fixed header.
-          Mobile: header ~70px (no top bar), Desktop: header ~90px (top bar + main bar) */}
-      <div className="h-[70px] md:h-[90px]" aria-hidden="true" />
+      {/*
+        Spacer below fixed header.
+        Mobile: header is ~52px (logo 32px + py-2*2 + border)
+        Desktop: top bar (~28px) + main header (~60px) = ~88px
+      */}
+      <div className="h-[52px] md:h-[90px]" aria-hidden="true" />
       <HeroSlider onCTAClick={onSignupClick} />
       <AboutSection />
       <FeaturesSection />

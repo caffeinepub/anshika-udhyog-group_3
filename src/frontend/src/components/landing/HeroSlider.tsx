@@ -59,9 +59,11 @@ export function HeroSlider({ onCTAClick }: HeroSliderProps) {
     <section
       className="relative w-full overflow-hidden"
       style={{
-        height: "min(500px, 70vw)",
-        minHeight: "280px",
-        maxHeight: "580px",
+        /* Mobile: full viewport minus compact header (~52px)
+           Desktop: viewport minus full header (~90px) */
+        height: "calc(100vw * 0.56)",
+        minHeight: "200px",
+        maxHeight: "600px",
       }}
     >
       <AnimatePresence initial={false} custom={direction}>
@@ -77,7 +79,7 @@ export function HeroSlider({ onCTAClick }: HeroSliderProps) {
           <img
             src={slides[current].image}
             alt={slides[current].title}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover object-center"
           />
           {/* Overlay */}
           <div
@@ -96,18 +98,18 @@ export function HeroSlider({ onCTAClick }: HeroSliderProps) {
                 <span className="inline-block bg-green-500 bg-opacity-80 text-white text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider mb-2 md:mb-3">
                   {slides[current].subtitle}
                 </span>
-                <h1 className="text-xl sm:text-3xl md:text-5xl font-bold mb-2 md:mb-4 leading-tight px-2">
+                <h1 className="text-lg sm:text-3xl md:text-5xl font-bold mb-2 md:mb-4 leading-tight px-2">
                   {slides[current].title}
                 </h1>
-                <p className="text-xs sm:text-sm md:text-lg text-green-100 mb-4 md:mb-8 max-w-2xl mx-auto px-2 hidden sm:block">
+                <p className="text-xs sm:text-sm md:text-lg text-green-100 mb-3 md:mb-8 max-w-2xl mx-auto px-2 hidden sm:block">
                   {slides[current].description}
                 </p>
-                <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 justify-center px-4">
+                <div className="flex flex-row gap-2 justify-center px-2">
                   <button
                     type="button"
                     onClick={onCTAClick}
                     data-ocid="hero.primary_button"
-                    className="bg-white text-green-800 hover:bg-green-50 font-semibold px-5 sm:px-8 py-2.5 sm:py-3 rounded-lg transition-all duration-200 shadow-lg text-sm sm:text-base"
+                    className="bg-white text-green-800 hover:bg-green-50 font-semibold px-4 sm:px-8 py-2 sm:py-3 rounded-lg transition-all duration-200 shadow-lg text-xs sm:text-base"
                   >
                     {slides[current].cta}
                   </button>
@@ -115,7 +117,7 @@ export function HeroSlider({ onCTAClick }: HeroSliderProps) {
                     type="button"
                     onClick={onCTAClick}
                     data-ocid="hero.secondary_button"
-                    className="border-2 border-white text-white hover:bg-white hover:bg-opacity-20 font-semibold px-5 sm:px-8 py-2.5 sm:py-3 rounded-lg transition-all duration-200 text-sm sm:text-base"
+                    className="border-2 border-white text-white hover:bg-white hover:bg-opacity-20 font-semibold px-4 sm:px-8 py-2 sm:py-3 rounded-lg transition-all duration-200 text-xs sm:text-base"
                   >
                     Become a Member
                   </button>
@@ -131,7 +133,7 @@ export function HeroSlider({ onCTAClick }: HeroSliderProps) {
         type="button"
         onClick={prev}
         data-ocid="hero.slider.prev"
-        className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-10 sm:h-10 bg-black bg-opacity-30 hover:bg-opacity-50 rounded-full flex items-center justify-center text-white transition-all z-10"
+        className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 w-7 h-7 sm:w-10 sm:h-10 bg-black bg-opacity-30 hover:bg-opacity-50 rounded-full flex items-center justify-center text-white transition-all z-10"
       >
         <ChevronLeft className="w-4 h-4 sm:w-6 sm:h-6" />
       </button>
@@ -139,13 +141,13 @@ export function HeroSlider({ onCTAClick }: HeroSliderProps) {
         type="button"
         onClick={next}
         data-ocid="hero.slider.next"
-        className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-10 sm:h-10 bg-black bg-opacity-30 hover:bg-opacity-50 rounded-full flex items-center justify-center text-white transition-all z-10"
+        className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 w-7 h-7 sm:w-10 sm:h-10 bg-black bg-opacity-30 hover:bg-opacity-50 rounded-full flex items-center justify-center text-white transition-all z-10"
       >
         <ChevronRight className="w-4 h-4 sm:w-6 sm:h-6" />
       </button>
 
       {/* Dots */}
-      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-2 z-10">
         {slides.map((slide, i) => (
           <button
             type="button"
