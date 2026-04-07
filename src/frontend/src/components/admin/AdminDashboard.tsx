@@ -287,6 +287,17 @@ export function AdminDashboard(props: AdminDashboardProps) {
     }
   }, [activeSection]);
 
+  // Listen for custom navigation events from other admin components (e.g. Forward buttons)
+  useEffect(() => {
+    const handler = (e: CustomEvent) => {
+      setActiveSection(e.detail as AdminSection);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+    window.addEventListener("admin-navigate", handler as EventListener);
+    return () =>
+      window.removeEventListener("admin-navigate", handler as EventListener);
+  }, []);
+
   const handleSectionChange = (section: AdminSection) => {
     setActiveSection(section);
     // Scroll to top of content on mobile

@@ -1,5 +1,5 @@
 import { Toaster } from "@/components/ui/sonner";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { AdminDashboard } from "./components/admin/AdminDashboard";
 import { LoginModal } from "./components/auth/LoginModal";
 import { SignupPage } from "./components/auth/SignupPage";
@@ -145,6 +145,24 @@ export default function App() {
   };
 
   const showHeader = page !== "signup";
+
+  // Dynamically update favicon and apple-touch-icon from settings.logoUrl
+  useEffect(() => {
+    if (!settings.logoUrl) return;
+    const updateIcon = (rel: string, href: string) => {
+      let link = document.querySelector<HTMLLinkElement>(`link[rel="${rel}"]`);
+      if (!link) {
+        link = document.createElement("link");
+        link.rel = rel;
+        document.head.appendChild(link);
+      }
+      link.href = href;
+    };
+    updateIcon("icon", settings.logoUrl);
+    updateIcon("shortcut icon", settings.logoUrl);
+    updateIcon("apple-touch-icon", settings.logoUrl);
+  }, [settings.logoUrl]);
+
   const showFooter =
     page !== "dashboard" && page !== "admin" && page !== "signup";
 

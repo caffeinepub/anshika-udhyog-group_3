@@ -84,7 +84,6 @@ const LETTER_TEMPLATES: Record<string, { subject: string; body: string }> = {
   },
 };
 
-// 12 header design styles
 const HEADER_DESIGNS = [
   {
     id: 1,
@@ -255,23 +254,32 @@ export function OfficialLetterGenerator({
     LETTER_TYPES.find((t) => t.value === letterType)?.label ?? "Letter";
   const design = HEADER_DESIGNS[selectedDesign] ?? HEADER_DESIGNS[0];
 
+  const handlePrint = () => {
+    window.focus();
+    window.print();
+  };
+
   return (
     <div className="space-y-6">
       <style>{`
+        @page { size: A4 portrait; margin: 15mm 18mm; }
         @media print {
           .no-print { display: none !important; }
-          .print-overlay { position: fixed !important; inset: 0 !important; z-index: 9999 !important; background: white !important; padding: 0 !important; overflow: visible !important; }
+          .print-overlay { position: static !important; background: white !important; padding: 0 !important; overflow: visible !important; }
+          body { margin: 0; padding: 0; }
           body > * { visibility: hidden; }
           .print-overlay, .print-overlay * { visibility: visible !important; }
+          .letter-a4-page { box-shadow: none !important; width: 100% !important; min-height: auto !important; }
         }
       `}</style>
 
       <div className="no-print">
         <h2 className="text-xl font-bold text-gray-900">
-          Official Letter Generator
+          📄 Official Letter Generator
         </h2>
         <p className="text-sm text-gray-500 mt-1">
-          Professional A4 letters with letterhead, seal &amp; signature
+          Professional A4 letters with letterhead, seal &amp; signature — PDF
+          download supported
         </p>
       </div>
 
@@ -284,7 +292,6 @@ export function OfficialLetterGenerator({
               🔏 Seal &amp; Signature
             </h3>
             <div className="grid grid-cols-2 gap-4">
-              {/* Seal */}
               <div>
                 <Label className="text-xs text-gray-500 mb-1 block">
                   Official Seal / Stamp
@@ -330,7 +337,6 @@ export function OfficialLetterGenerator({
                   </button>
                 )}
               </div>
-              {/* Signature */}
               <div>
                 <Label className="text-xs text-gray-500 mb-1 block">
                   Signature Image
@@ -382,7 +388,7 @@ export function OfficialLetterGenerator({
           {/* Header Design Select */}
           <div className="bg-white rounded-xl p-5 border border-green-100">
             <h3 className="font-semibold text-gray-800 mb-3">
-              🎨 Letterhead Design (10-12 Options)
+              🎨 Letterhead Design (12 Options)
             </h3>
             <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto pr-1">
               {HEADER_DESIGNS.map((d, i) => (
@@ -499,10 +505,7 @@ export function OfficialLetterGenerator({
                     size="icon"
                     variant="outline"
                     onClick={() =>
-                      setForm((p) => ({
-                        ...p,
-                        refNumber: generateRefNumber(),
-                      }))
+                      setForm((p) => ({ ...p, refNumber: generateRefNumber() }))
                     }
                     title="Generate new ref"
                     className="shrink-0"
@@ -585,7 +588,7 @@ export function OfficialLetterGenerator({
             className="w-full gap-2"
             style={{ backgroundColor: design.primaryColor }}
           >
-            <Eye className="w-4 h-4" /> Generate Letter Preview
+            <Eye className="w-4 h-4" /> Generate Letter Preview (A4)
           </Button>
         </div>
 
@@ -626,25 +629,31 @@ export function OfficialLetterGenerator({
           <div className="relative w-full max-w-3xl">
             <div className="no-print flex items-center justify-between mb-4">
               <h3 className="text-white font-semibold">
-                {letterTypeName} - Preview
+                {letterTypeName} — A4 Preview
               </h3>
-              <div className="flex gap-2">
-                <Button
-                  onClick={() => window.print()}
-                  data-ocid="letter.print_button"
-                  className="gap-2"
-                  style={{ backgroundColor: design.primaryColor }}
-                >
-                  <Printer className="w-4 h-4" /> Print / Download PDF
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => setShowPreview(false)}
-                  data-ocid="letter.close_button"
-                  className="bg-white"
-                >
-                  <X className="w-4 h-4" />
-                </Button>
+              <div className="flex flex-col items-end gap-2">
+                <div className="flex gap-2">
+                  <Button
+                    onClick={handlePrint}
+                    data-ocid="letter.print_button"
+                    className="gap-2"
+                    style={{ backgroundColor: design.primaryColor }}
+                  >
+                    <Printer className="w-4 h-4" /> Print / Download PDF
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => setShowPreview(false)}
+                    data-ocid="letter.close_button"
+                    className="bg-white"
+                  >
+                    <X className="w-4 h-4" />
+                  </Button>
+                </div>
+                <div className="text-xs text-white/70 bg-black/30 rounded px-2 py-1">
+                  💡 Print dialog mein &quot;Save as PDF&quot; select karein —
+                  full A4 download hoga
+                </div>
               </div>
             </div>
             <LetterDocument
@@ -1072,7 +1081,7 @@ function LetterDocument({
 
   return (
     <div
-      className="bg-white shadow-2xl"
+      className="letter-a4-page bg-white shadow-2xl"
       style={{
         width: "210mm",
         minHeight: "297mm",
@@ -1081,6 +1090,7 @@ function LetterDocument({
         fontSize: "12pt",
         lineHeight: "1.6",
         color: "#1a1a1a",
+        boxSizing: "border-box",
       }}
     >
       {/* Letterhead */}
@@ -1173,8 +1183,8 @@ function LetterDocument({
               src={signatureUrl}
               alt="Signature"
               style={{
-                height: "48px",
-                maxWidth: "160px",
+                height: "60px",
+                maxWidth: "180px",
                 objectFit: "contain",
                 marginBottom: "4px",
               }}
@@ -1204,8 +1214,8 @@ function LetterDocument({
               src={sealUrl}
               alt="Seal"
               style={{
-                width: "80px",
-                height: "80px",
+                width: "90px",
+                height: "90px",
                 objectFit: "contain",
                 opacity: 0.85,
               }}
@@ -1219,7 +1229,7 @@ function LetterDocument({
       <div
         style={{
           borderTop: `2px solid ${primary}`,
-          marginTop: "auto",
+          marginTop: "24px",
           paddingTop: "10px",
           fontSize: "9pt",
           color: "#777",

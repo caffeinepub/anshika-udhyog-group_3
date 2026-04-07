@@ -10,14 +10,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { CreditCard, Download, Eye, Printer, Upload, X } from "lucide-react";
+import { CreditCard, Eye, Printer, Upload, X } from "lucide-react";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
-import type { Designation, LocalMember, SiteSettings } from "../../types";
+import type { SiteSettings } from "../../types";
+import type { LocalMember } from "../../types";
 
 interface IDCardDesignerProps {
   members: LocalMember[];
-
   settings: SiteSettings;
   onUpdateSettings: (updates: Partial<SiteSettings>) => void;
 }
@@ -134,17 +134,17 @@ const CARD_DESIGNS = [
   },
 ];
 
-// Simple barcode SVG renderer (Code 128 style visual, decorative)
+// Simple barcode SVG renderer
 function BarcodeVisual({
   value,
   width = 120,
-  height = 32,
+  height = 36,
 }: { value: string; width?: number; height?: number }) {
   const bars: number[] = [];
   let seed = 0;
   for (let i = 0; i < value.length; i++)
     seed = (seed * 31 + value.charCodeAt(i)) & 0xffff;
-  for (let i = 0; i < 40; i++) {
+  for (let i = 0; i < 44; i++) {
     seed = (seed * 1664525 + 1013904223) & 0xffffffff;
     bars.push(((seed >>> 28) % 3) + 1);
   }
@@ -168,7 +168,7 @@ function BarcodeVisual({
             x={rx}
             y={0}
             width={w * scale}
-            height={height - 6}
+            height={height - 8}
             fill="#1a1a1a"
           />
         ) : null;
@@ -181,7 +181,7 @@ function BarcodeVisual({
         fontFamily="monospace"
         fill="#333"
       >
-        {value.slice(0, 14)}
+        {value.slice(0, 16)}
       </text>
     </svg>
   );
@@ -212,16 +212,16 @@ function PVCCardFront({
   return (
     <div
       style={{
-        width: "55mm",
-        minHeight: "90mm",
+        width: "54mm",
+        minHeight: "92mm",
         borderRadius: "8px",
         overflow: "hidden",
         fontFamily: "Arial, sans-serif",
         display: "flex",
         flexDirection: "column",
-        boxShadow: "0 4px 20px rgba(0,0,0,0.22)",
+        boxShadow: "0 4px 20px rgba(0,0,0,0.25)",
         background: design.bg,
-        border: `2px solid ${design.primary}`,
+        border: `2.5px solid ${design.primary}`,
         position: "relative",
       }}
     >
@@ -229,10 +229,11 @@ function PVCCardFront({
       <div
         style={{
           background: `linear-gradient(135deg, ${design.primary} 0%, ${design.secondary} 100%)`,
-          padding: "5px 8px",
+          padding: "6px 8px",
           display: "flex",
           alignItems: "center",
           gap: "6px",
+          minHeight: "22mm",
         }}
       >
         {settings.logoUrl ? (
@@ -240,81 +241,95 @@ function PVCCardFront({
             src={settings.logoUrl}
             alt="Logo"
             style={{
-              width: "26px",
-              height: "26px",
+              width: "28px",
+              height: "28px",
               borderRadius: "50%",
-              border: `1.5px solid ${design.accent}`,
+              border: `2px solid ${design.accent}`,
               objectFit: "cover",
               background: "white",
+              flexShrink: 0,
             }}
           />
         ) : (
           <div
             style={{
-              width: "26px",
-              height: "26px",
+              width: "28px",
+              height: "28px",
               borderRadius: "50%",
               background: design.accent,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              fontSize: "11px",
+              fontSize: "12px",
               fontWeight: "bold",
               color: design.primary,
+              flexShrink: 0,
             }}
           >
             {settings.siteName[0]}
           </div>
         )}
-        <div style={{ flex: 1 }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
           <div
             style={{
               color: design.text,
-              fontSize: "7.5px",
+              fontSize: "8px",
               fontWeight: "bold",
               letterSpacing: "0.3px",
-              lineHeight: 1.2,
+              lineHeight: 1.3,
             }}
           >
             {settings.siteName}
           </div>
           <div
-            style={{ color: design.accent, fontSize: "5.5px", lineHeight: 1.2 }}
+            style={{
+              color: design.accent,
+              fontSize: "5.5px",
+              lineHeight: 1.3,
+              marginTop: "1px",
+            }}
           >
             {settings.tagline}
           </div>
         </div>
         <div
-          style={{ color: design.accent, fontSize: "5px", textAlign: "right" }}
+          style={{
+            color: design.accent,
+            fontSize: "5.5px",
+            textAlign: "right",
+            flexShrink: 0,
+          }}
         >
-          <div>MEMBERSHIP</div>
+          <div style={{ fontWeight: "bold" }}>MEMBERSHIP</div>
           <div>ID CARD</div>
         </div>
       </div>
 
-      {/* Body */}
-      <div style={{ display: "flex", flex: 1, padding: "5px 8px", gap: "7px" }}>
-        {/* Photo */}
+      {/* Photo + Info row */}
+      <div
+        style={{ display: "flex", gap: "6px", padding: "6px 8px 4px", flex: 1 }}
+      >
+        {/* Photo - bigger, left side */}
         <div
           style={{
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
             gap: "3px",
+            flexShrink: 0,
           }}
         >
           <div
             style={{
-              width: "36px",
-              height: "36px",
+              width: "44px",
+              height: "52px",
               borderRadius: "4px",
-              border: `2px solid ${design.primary}`,
+              border: `2.5px solid ${design.primary}`,
               overflow: "hidden",
               background: design.bg,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              flexShrink: 0,
             }}
           >
             {member.photoUrl ? (
@@ -326,7 +341,7 @@ function PVCCardFront({
             ) : (
               <span
                 style={{
-                  fontSize: "18px",
+                  fontSize: "22px",
                   fontWeight: "bold",
                   color: design.primary,
                 }}
@@ -340,38 +355,39 @@ function PVCCardFront({
               src={sealUrl}
               alt="Official seal"
               style={{
-                width: "24px",
-                height: "24px",
+                width: "26px",
+                height: "26px",
                 objectFit: "contain",
-                opacity: 0.7,
+                opacity: 0.8,
               }}
             />
           )}
         </div>
 
-        {/* Details */}
-        <div style={{ flex: 1 }}>
+        {/* Right side: name + details */}
+        <div style={{ flex: 1, minWidth: 0 }}>
           <div
             style={{
               fontWeight: "bold",
-              fontSize: "8.5px",
+              fontSize: "9px",
               color: design.primary,
               lineHeight: 1.3,
+              marginBottom: "1px",
             }}
           >
             {member.name}
           </div>
           <div
             style={{
-              fontSize: "9px",
-              color: "#555",
-              marginBottom: "4px",
-              fontWeight: "600",
+              fontSize: "8px",
+              color: design.secondary,
+              fontWeight: "700",
+              marginBottom: "3px",
             }}
           >
             {(member as LocalMember).designation ?? "Member"}
           </div>
-          <div style={{ fontSize: "8px", color: "#333", lineHeight: 1.8 }}>
+          <div style={{ fontSize: "7px", color: "#333", lineHeight: 1.9 }}>
             <div>
               <strong>ID:</strong> {memberId}
             </div>
@@ -386,35 +402,36 @@ function PVCCardFront({
               <strong>Mob:</strong> {(member as LocalMember).phone ?? "—"}
             </div>
           </div>
+          {/* Authority name */}
+          {settings.siteName && (
+            <div
+              style={{
+                fontSize: "5.5px",
+                color: "#666",
+                marginTop: "3px",
+                lineHeight: 1.3,
+              }}
+            >
+              {settings.address?.split(",").slice(0, 2).join(",")}
+            </div>
+          )}
           {/* Signature */}
           {signatureUrl && (
-            <div style={{ marginTop: "2px" }}>
+            <div style={{ marginTop: "3px" }}>
               <img
                 src={signatureUrl}
                 alt="Authorized signature"
                 style={{
-                  height: "14px",
-                  maxWidth: "60px",
+                  height: "16px",
+                  maxWidth: "55px",
                   objectFit: "contain",
                 }}
               />
-              <div style={{ fontSize: "5px", color: "#999", lineHeight: 1 }}>
-                Authorized Sign
+              <div style={{ fontSize: "5px", color: "#888", lineHeight: 1 }}>
+                Auth. Sign
               </div>
             </div>
           )}
-        </div>
-
-        {/* Barcode */}
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "flex-end",
-          }}
-        >
-          <BarcodeVisual value={memberId} width={44} height={28} />
         </div>
       </div>
 
@@ -422,7 +439,7 @@ function PVCCardFront({
       <div
         style={{
           background: design.primary,
-          padding: "2px 8px",
+          padding: "3px 8px",
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
@@ -446,10 +463,12 @@ function PVCCardBack({
   settings,
   design,
   termsText,
+  memberId,
 }: {
   settings: SiteSettings;
   design: (typeof CARD_DESIGNS)[0];
   termsText: string;
+  memberId?: string;
 }) {
   const defaultTerms = `1. This card is the property of ${settings.siteName} and must be returned on demand.
 2. This card is non-transferable and valid only for the named member.
@@ -457,36 +476,47 @@ function PVCCardBack({
 4. Contact: ${settings.contactPhone} | ${settings.contactEmail}
 5. Any misuse of this card is subject to legal action.
 6. The organization reserves the right to cancel this card at any time.
-7. Card validity is subject to membership renewal and payment of dues.`;
+7. Card validity is subject to membership renewal and payment of dues.
+8. The holder must carry this card at all times during official activities.`;
 
   return (
     <div
       style={{
-        width: "85.6mm",
-        height: "54mm",
-        borderRadius: "6px",
+        width: "54mm",
+        minHeight: "92mm",
+        borderRadius: "8px",
         overflow: "hidden",
         fontFamily: "Arial, sans-serif",
         display: "flex",
         flexDirection: "column",
-        boxShadow: "0 4px 16px rgba(0,0,0,0.18)",
+        boxShadow: "0 4px 16px rgba(0,0,0,0.2)",
         background: design.bg,
-        border: `2px solid ${design.primary}`,
+        border: `2.5px solid ${design.primary}`,
       }}
     >
       {/* Back Header */}
       <div
         style={{
           background: `linear-gradient(135deg, ${design.primary} 0%, ${design.secondary} 100%)`,
-          padding: "4px 8px",
+          padding: "5px 8px",
           textAlign: "center",
         }}
       >
         <div
           style={{
             color: design.text,
-            fontSize: "7px",
+            fontSize: "7.5px",
             fontWeight: "bold",
+            letterSpacing: "0.8px",
+          }}
+        >
+          {settings.siteName}
+        </div>
+        <div
+          style={{
+            color: design.accent,
+            fontSize: "6px",
+            marginTop: "1px",
             letterSpacing: "1px",
           }}
         >
@@ -494,13 +524,29 @@ function PVCCardBack({
         </div>
       </div>
 
+      {/* Barcode section */}
+      <div
+        style={{
+          padding: "5px 8px 3px",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <BarcodeVisual
+          value={memberId ?? "AUG000000"}
+          width={120}
+          height={40}
+        />
+      </div>
+
       {/* T&C Content */}
-      <div style={{ flex: 1, padding: "5px 8px", overflow: "hidden" }}>
+      <div style={{ flex: 1, padding: "2px 8px", overflow: "hidden" }}>
         <div
           style={{
             fontSize: "5.5px",
             color: "#333",
-            lineHeight: 1.7,
+            lineHeight: 1.75,
             whiteSpace: "pre-line",
           }}
         >
@@ -517,14 +563,10 @@ function PVCCardBack({
         }}
       >
         <div
-          style={{
-            color: design.accent,
-            fontSize: "5.5px",
-            fontWeight: "bold",
-          }}
+          style={{ color: design.accent, fontSize: "5px", fontWeight: "bold" }}
         >
-          {settings.siteName} | Reg. No: {settings.registrationNo ?? "—"} |{" "}
-          {settings.address}
+          Reg. No: {settings.registrationNo ?? "—"} |{" "}
+          {settings.address?.split(",").slice(0, 2).join(",")}
         </div>
       </div>
     </div>
@@ -593,22 +635,37 @@ export function IDCardDesigner({
     toast.success("ID Card settings saved");
   };
 
+  const handlePrint = () => {
+    window.focus();
+    window.print();
+  };
+
   return (
     <div className="space-y-6">
       <style>{`
+        @page { size: A4 portrait; margin: 10mm; }
         @media print {
           .no-print { display: none !important; }
-          .print-area { position: fixed !important; inset: 0 !important; z-index: 9999 !important; background: white !important; display: flex; align-items: center; justify-content: center; gap: 12mm; }
+          .print-area {
+            position: fixed !important; inset: 0 !important; z-index: 9999 !important;
+            background: white !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 20mm !important;
+          }
           body > * { visibility: hidden; }
           .print-area, .print-area * { visibility: visible !important; }
         }
       `}</style>
 
       <div className="no-print">
-        <h2 className="text-xl font-bold text-gray-900">🪪 ID Card Designer</h2>
+        <h2 className="text-xl font-bold text-gray-900">
+          🪦 ID Card Designer (PVC)
+        </h2>
         <p className="text-sm text-gray-500 mt-1">
-          Design PVC ID cards with 12 themes, photo, barcode, seal, and Terms
-          &amp; Conditions on back
+          Portrait PVC cards — Front &amp; Back, barcode, seal, signature, 12
+          design themes
         </p>
       </div>
 
@@ -768,7 +825,7 @@ export function IDCardDesigner({
               onChange={(e) => setTermsText(e.target.value)}
               rows={5}
               className="text-xs"
-              placeholder="Enter terms and conditions for the back of the ID card (leave blank for default)..."
+              placeholder="Enter terms and conditions (leave blank for default)..."
               data-ocid="idcard.terms.textarea"
             />
           </div>
@@ -781,14 +838,13 @@ export function IDCardDesigner({
           >
             Save Card Settings
           </Button>
-
           <Button
             className="w-full gap-2"
             variant="outline"
             onClick={() => setShowPreview(true)}
             data-ocid="idcard.preview_button"
           >
-            <Eye className="w-4 h-4" /> Full Preview &amp; Print
+            <Eye className="w-4 h-4" /> Full Preview &amp; Print / PDF
           </Button>
         </div>
 
@@ -796,7 +852,9 @@ export function IDCardDesigner({
         <div className="lg:col-span-2 space-y-4">
           <div className="bg-white rounded-xl p-5 border border-green-100">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold text-gray-800">Live Card Preview</h3>
+              <h3 className="font-semibold text-gray-800">
+                Live Card Preview (Portrait)
+              </h3>
               {selectedMember && (
                 <Badge className="bg-green-100 text-green-800">
                   {selectedMember.name}
@@ -805,10 +863,10 @@ export function IDCardDesigner({
             </div>
 
             {selectedMember ? (
-              <div className="space-y-5">
+              <div className="space-y-8">
                 <div>
-                  <div className="text-xs text-gray-500 mb-2 font-semibold uppercase tracking-wide">
-                    Front Side
+                  <div className="text-xs text-gray-500 mb-3 font-semibold uppercase tracking-wide">
+                    🏦 Front Side
                   </div>
                   <div className="flex justify-center">
                     <PVCCardFront
@@ -822,14 +880,15 @@ export function IDCardDesigner({
                   </div>
                 </div>
                 <div>
-                  <div className="text-xs text-gray-500 mb-2 font-semibold uppercase tracking-wide">
-                    Back Side (Terms &amp; Conditions)
+                  <div className="text-xs text-gray-500 mb-3 font-semibold uppercase tracking-wide">
+                    🔄 Back Side (Barcode + Terms)
                   </div>
                   <div className="flex justify-center">
                     <PVCCardBack
                       settings={settings}
                       design={design}
                       termsText={termsText}
+                      memberId={selectedMember.id}
                     />
                   </div>
                 </div>
@@ -859,7 +918,6 @@ export function IDCardDesigner({
                         ? "border-green-600 bg-green-50"
                         : "border-gray-200 hover:border-green-300"
                     }`}
-                    data-ocid={`idcard.member_select.${m.id}`}
                   >
                     <div className="flex items-center gap-2">
                       <div
@@ -911,11 +969,11 @@ export function IDCardDesigner({
           <div className="w-full max-w-4xl my-8 space-y-4">
             <div className="no-print flex items-center justify-between">
               <h3 className="text-white font-semibold text-lg">
-                ID Card Preview - {selectedMember.name}
+                ID Card Preview — {selectedMember.name}
               </h3>
               <div className="flex gap-2">
                 <Button
-                  onClick={() => window.print()}
+                  onClick={handlePrint}
                   className="gap-2"
                   style={{ backgroundColor: design.primary }}
                   data-ocid="idcard.print_button"
@@ -926,16 +984,17 @@ export function IDCardDesigner({
                   variant="outline"
                   onClick={() => setShowPreview(false)}
                   className="bg-white"
+                  data-ocid="idcard.close_button"
                 >
                   <X className="w-4 h-4" />
                 </Button>
               </div>
             </div>
 
-            <div className="print-area bg-white rounded-2xl p-8 flex flex-col sm:flex-row items-center justify-center gap-8">
+            <div className="print-area bg-white rounded-2xl p-8 flex flex-col sm:flex-row items-center justify-center gap-10">
               <div className="space-y-2 text-center">
                 <div className="text-xs text-gray-400 font-semibold uppercase tracking-wide no-print">
-                  Front
+                  Front Side
                 </div>
                 <PVCCardFront
                   member={selectedMember}
@@ -948,19 +1007,20 @@ export function IDCardDesigner({
               </div>
               <div className="space-y-2 text-center">
                 <div className="text-xs text-gray-400 font-semibold uppercase tracking-wide no-print">
-                  Back
+                  Back Side
                 </div>
                 <PVCCardBack
                   settings={settings}
                   design={design}
                   termsText={termsText}
+                  memberId={selectedMember.id}
                 />
               </div>
             </div>
 
             <div className="no-print bg-white/10 rounded-lg p-3 text-white/70 text-xs text-center">
-              Tip: Use Ctrl+P / Cmd+P to print, set "Scale to fit" and "Fit card
-              size" for best PVC print quality
+              💡 Tip: Ctrl+P / Cmd+P → &quot;Save as PDF&quot; → Scale 100% →
+              Portrait — PVC card size ke liye print karein
             </div>
           </div>
         </div>
